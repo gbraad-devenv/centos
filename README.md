@@ -1,12 +1,23 @@
-centos
-======
+Gerard Braad's CentOS development environment
+=============================================
 
-# Usage
-
-  * https://gitpod.io/new/#https://github.com/gbraad-devenv/centos/
+!["Prompt"](https://raw.githubusercontent.com/gbraad/assets/gh-pages/icons/prompt-icon-64.png)
 
 
-# Build
-```
-$ [docker|podman] build -f containers/Containerfile-base -t ghcr.io/gbraad-devenv/centos/base:stream9 .
-```
+Installation and deployment scripts for my personal development environment.
+
+
+Usage
+-----
+
+### Cloud
+
+  * Open in [Gitpod workspace](https://gitpod.io/#https://github.com/gbraad-devenv/centos)
+
+
+Authors
+-------
+
+| [!["Gerard Braad"](http://gravatar.com/avatar/e466994eea3c2a1672564e45aca844d0.png?s=60)](http://gbraad.nl "Gerard Braad <me@gbraad.nl>") |
+|---|
+| [@gbraad](https://gbraad.nl/social)  |
