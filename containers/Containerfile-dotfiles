@@ -3,6 +3,7 @@ FROM ghcr.io/gbraad-devenv/centos/base:stream9
 USER gbraad
 
 RUN git clone https://github.com/gbraad/dotfiles ~/.dotfiles \
+    && rm -f ~/.zshrc \
     && ~/.dotfiles/install.sh
 
 ENTRYPOINT [ "/bin/zsh" ]
