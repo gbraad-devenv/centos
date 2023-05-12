@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # clean workspace folder
-#rm -rf /workspace/fedora
-#mkdir /workspace/fedora
-#ln -s /workspace/fedora ~/Projects
-#git init /workspace/fedora
+rm -rf /workspace/centos
+mkdir /workspace/centos
+ln -s /workspace/centos ~/Projects
+git init /workspace/centos
 
-#cd ~
+cd ~
 
 exit 0
