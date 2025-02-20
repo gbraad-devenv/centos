@@ -1,0 +1,40 @@
+name: build container - code cli + bootc
+run-name: building container - code cli + bootc
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+jobs:
+  build:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Run podman build - code-cli
+        run: |
+          podman build -t ghcr.io/gbraad-devenv/centos/code-cli:stream9 \
+            --build-arg=BASE_IMAGE="ghcr.io/gbraad-devenv/centos/systemd" \
+            --build-arg=BASE_VERSION="stream9" \
+            -f containers/Containerfile-code-cli .
+      - name: Push image to ghcr.io - code-cli
+        run: |
+          podman push --creds=${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
+            ghcr.io/gbraad-devenv/centos/code-cli:stream9
+      - name: Run podman build - code-cli-bootc
+        run: |
+          podman build -t ghcr.io/gbraad-devenv/centos/code-cli-bootc:stream9 \
+            --build-arg=BASE_IMAGE="ghcr.io/gbraad-devenv/centos/systemd-bootc" \
+            --build-arg=BASE_VERSION="stream9" \
+            -f containers/Containerfile-code-cli .
+      - name: Push image to ghcr.io - code-cli-bootc
+        run: |
+          podman push --creds=${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
+            ghcr.io/gbraad-devenv/centos/code-cli-bootc:stream9

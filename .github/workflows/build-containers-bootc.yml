@@ -1,0 +1,50 @@
+name: build containers (bootc)
+run-name: building containers (bootc)
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Run podman build - base-bootc
+        run: |
+          podman build -t ghcr.io/gbraad-devenv/centos/base-bootc:stream9 \
+            --build-arg=BASE_IMAGE="quay.io/centos-bootc/centos-bootc" \
+            --build-arg=BASE_VERSION="stream9" \
+            -f containers/Containerfile-base .
+      - name: Run podman build - dotfiles-bootc
+        run: |
+          podman build -t ghcr.io/gbraad-devenv/centos/dotfiles-bootc:stream9 \
+            --build-arg=BASE_IMAGE="ghcr.io/gbraad-devenv/centos/base-bootc" \
+            --build-arg=BASE_VERSION="stream9" \
+            --build-arg=USER_PASSWD="password" \
+            -f containers/Containerfile-dotfiles .
+      - name: Run podman build - systemd-bootc
+        run: |
+          podman build -t ghcr.io/gbraad-devenv/centos/systemd-bootc:stream9 \
+            --build-arg=BASE_IMAGE="ghcr.io/gbraad-devenv/centos/dotfiles-bootc" \
+            --build-arg=BASE_VERSION="stream9" \
+            -f containers/Containerfile-systemd .
+      - name: Login to ghcr.io
+        run: |
+          podman login ghcr.io -u ${{ github.actor }} \
+            -p ${{ secrets.GITHUB_TOKEN }}
+      - name: Push image to ghcr.io - base-bootc
+        run: |
+          podman push ghcr.io/gbraad-devenv/centos/base-bootc:stream9
+      - name: Push image to ghcr.io - dotfiles-bootc
+        run: |
+          podman push ghcr.io/gbraad-devenv/centos/dotfiles-bootc:stream9
+      - name: Push image to ghcr.io - systemd-bootc
+        run: |
+          podman push ghcr.io/gbraad-devenv/centos/systemd-bootc:stream9

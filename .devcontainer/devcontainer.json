@@ -1,10 +1,10 @@
 {
-    "name": "Fedora developer environment",
+    "name": "CentOS developer environment",
     //"dockerFile": "Dockerfile",
-    "image": "ghcr.io/gbraad-devenv/centos/base:stream9",
+    "image": "ghcr.io/gbraad-devenv/centos/dotfiles:stream9",
     "context": "..",
     "runArgs": [ "--cap-add=NET_ADMIN", "--cap-add=NET_RAW", "--device=/dev/net/tun" ],
-    "postStartCommand": "github/install.sh",
+    "postStartCommand": ".github/install.sh",
     "extensions": [
          "ms-vscode.Theme-TomorrowKit",
          "ritwickdey.LiveServer"

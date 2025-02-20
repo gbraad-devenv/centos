@@ -1,4 +1,9 @@
-FROM quay.io/centos/centos:stream9
+ARG BASE_IMAGE="quay.io/centos/centos"
+ARG BASE_VERSION="stream9"
+
+FROM ${BASE_IMAGE}:${BASE_VERSION}
+
+LABEL org.opencontainers.image.source = "https://github.com/gbraad-devenv/centos"
 
 USER root
 
@@ -8,7 +13,7 @@ RUN dnf install -y dnf-plugins-core git-core sudo zsh \
     && rm -rf /var/cache/yum
 
 # Add user with the expected ID (automated setup does not work atm)
-RUN useradd -l -u 1000 -G wheel -md /home/gbraad -s /usr/bin/zsh -p gbraad gbraad \
+RUN useradd -l -u 1000 -G wheel -md /var/home/gbraad -s /usr/bin/zsh -p gbraad gbraad \
     && sed -i.bkp -e 's/%wheel\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%wheel ALL=NOPASSWD:ALL/g' /etc/sudoers
 
 # install tailscale
@@ -42,7 +47,7 @@ RUN dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.rep
     && dnf clean all \
     && rm -rf /var/cache/yum
 
-COPY scripts/tailscaled /etc/init.d/tailscaled
+COPY assets/tailscaled /etc/init.d/tailscaled
 RUN mkdir -p /var/run/tailscale /var/cache/tailscale /var/lib/tailscale
 
 USER gbraad

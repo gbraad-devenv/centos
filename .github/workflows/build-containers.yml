@@ -1,0 +1,52 @@
+name: build containers
+run-name: building containers
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+jobs:
+  build:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Run podman build - base
+        run: |
+          podman build -t ghcr.io/gbraad-devenv/centos/base:stream9 \
+            --build-arg=BASE_IMAGE="quay.io/centos/centos" \
+            --build-arg=BASE_VERSION="stream9" \
+            -f containers/Containerfile-base .
+      - name: Run podman build - dotfiles
+        run: |
+          podman build -t ghcr.io/gbraad-devenv/centos/dotfiles:stream9 \
+            --build-arg=BASE_IMAGE="ghcr.io/gbraad-devenv/centos/base" \
+            --build-arg=BASE_VERSION="stream9" \
+            -f containers/Containerfile-dotfiles .
+      - name: Run podman build - systemd
+        run: |
+          podman build -t ghcr.io/gbraad-devenv/centos/systemd:stream9 \
+            --build-arg=BASE_IMAGE="ghcr.io/gbraad-devenv/centos/dotfiles" \
+            --build-arg=BASE_VERSION="stream9" \
+            -f containers/Containerfile-systemd .
+
+      - name: Login to ghcr.io
+        run: |
+          podman login ghcr.io -u ${{ github.actor }} \
+            -p ${{ secrets.GITHUB_TOKEN }}
+      - name: Push image to ghcr.io - base
+        run: |
+          podman push ghcr.io/gbraad-devenv/centos/base:stream9
+      - name: Push image to ghcr.io - dotfiles
+        run: |
+          podman push ghcr.io/gbraad-devenv/centos/dotfiles:stream9
+      - name: Push image to ghcr.io - systemd
+        run: |
+          podman push ghcr.io/gbraad-devenv/centos/systemd:stream9

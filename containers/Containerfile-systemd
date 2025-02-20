@@ -1,6 +1,9 @@
-FROM ghcr.io/gbraad-devenv/centos/dotfiles:stream9
+ARG BASE_IMAGE="ghcr.io/gbraad-devenv/centos/dotfiles"
+ARG BASE_VERSION="stream9"
+
+FROM ${BASE_IMAGE}:${BASE_VERSION}
 
 USER root
 
 ENTRYPOINT ["/sbin/init"]
-CMD ["/sbin/init"]
+#CMD ["/sbin/init"]

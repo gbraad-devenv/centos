@@ -8,4 +8,4 @@ git init /workspaces/centos
 
 cd ~
 
-sudo /etc/init.d/tailscaled start &
+exit 0
