@@ -1,12 +1,22 @@
 {
     "name": "CentOS developer environment",
-    //"dockerFile": "Dockerfile",
-    "image": "ghcr.io/gbraad-devenv/centos/dotfiles:stream9",
-    "context": "..",
-    "runArgs": [ "--cap-add=NET_ADMIN", "--cap-add=NET_RAW", "--device=/dev/net/tun" ],
+    "image": "ghcr.io/gbraad-devenv/centos/systemd:stream9",
+
+    "runArgs": [ "--cap-add=NET_ADMIN", "--cap-add=NET_RAW", "--device=/dev/net/tun", "--device=/dev/fuse" ],
     "postStartCommand": ".github/install.sh",
-    "extensions": [
-         "ms-vscode.Theme-TomorrowKit",
-         "ritwickdey.LiveServer"
-    ]
+
+    "overrideCommand": false,
+	"privileged": true,
+    "remoteUser": "gbraad",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.Theme-TomorrowKit",
+                "ritwickdey.LiveServer",
+                "ms-toolsai.jupyter",
+                "ms-python.python"
+            ]
+        }
+    }
 }
